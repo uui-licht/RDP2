@@ -8,6 +8,7 @@ jobs:
     steps:
       - name: Set up VPS
         run: |
-          Invoke-WebRequest -Uri https://tailscale.com/install.ps1 -OutFile install.ps1
+          Invoke-WebRequest -Uri https://pkgs.tailscale.com/stable/tailscale-install.ps1 -OutFile install.ps1
+
           powershell.exe -ExecutionPolicy Bypass -File install.ps1
           tailscale up --authkey tskey-auth-kJDb2odBrQ11CNTRL-RcNGanCA8rfFnmnRG6Ebrfgfq35bih52 --advertise-exit-node --hostname netherlands-exit
