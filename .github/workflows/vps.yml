@@ -1,29 +1,13 @@
-name: Windows RDP
+name: Netherlands VPS
 
-on:
-  workflow_dispatch:
+on: workflow_dispatch
 
 jobs:
   build:
     runs-on: windows-latest
-    timeout-minutes: 9999
-
     steps:
-      - name: Downloading Files
+      - name: Set up VPS
         run: |
-          Invoke-WebRequest https://github.com/Tailscale/tailscale/releases/latest/download/tailscale-setup.exe -OutFile tailscale-setup.exe
-          Start-Process tailscale-setup.exe -ArgumentList '/quiet' -Wait
-
-      - name: Connect to Tailscale
-        run: |
-          tailscale up --authkey YOUR_TAILSCALE_AUTHKEY --hostname github-rdp
-
-      - name: Enable RDP Access
-        run: |
-          Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" -Name "fDenyTSConnections" -Value 0
-          Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-
-      - name: Display Connection Info
-        run: |
-          echo "✅ RDP is ready! Connect through Tailscale using the name: github-rdp"
-          ipconfig
+          Invoke-WebRequest -Uri https://tailscale.com/install.ps1 -OutFile install.ps1
+          powershell.exe -ExecutionPolicy Bypass -File install.ps1
+          tailscale up --authkey tskey-auth-kJDb2odBrQ11CNTRL-RcNGanCA8rfFnmnRG6Ebrfgfq35bih52 --advertise-exit-node --hostname netherlands-exit
