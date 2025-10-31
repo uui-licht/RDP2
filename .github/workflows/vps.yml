@@ -18,7 +18,8 @@ jobs:
     - name: Start Tailscale & Advertise Exit Node
       run: |
         Write-Host "Connecting Tailscale node..."
-        tailscale up --authkey tskey-auth-kJDb2odBrQ11CNTRL-RcNGanCA8rfFnmnRG6Ebrfgfq35bih52 --hostname netherlands-exit --advertise-exit-node
+        $tailscalePath = "C:\Program Files\Tailscale\tailscale.exe"
+        & "$tailscalePath" up --authkey tskey-auth-kJDb2odBrQ11CNTRL-RcNGanCA8rfFnmnRG6Ebrfgfq35bih52 --hostname netherlands-exit --advertise-exit-node
         Write-Host "Tailscale node is now active as exit node."
 
     - name: Keep VPS alive
