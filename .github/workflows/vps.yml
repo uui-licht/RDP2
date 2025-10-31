@@ -1,14 +1,27 @@
 name: Netherlands VPS
-
-on: workflow_dispatch
+on:
+  workflow_dispatch:
 
 jobs:
-  build:
+  setup:
     runs-on: windows-latest
-    steps:
-      - name: Set up VPS
-        run: |
-          Invoke-WebRequest -Uri https://pkgs.tailscale.com/stable/tailscale-install.ps1 -OutFile install.ps1
 
-          powershell.exe -ExecutionPolicy Bypass -File install.ps1
-          tailscale up --authkey tskey-auth-kJDb2odBrQ11CNTRL-RcNGanCA8rfFnmnRG6Ebrfgfq35bih52 --advertise-exit-node --hostname netherlands-exit
+    steps:
+    - name: Download and Install Tailscale
+      run: |
+        Write-Host "Downloading Tailscale..."
+        Invoke-WebRequest -Uri "https://pkgs.tailscale.com/stable/tailscale-setup-latest-amd64.msi" -OutFile "tailscale.msi"
+        Write-Host "Installing Tailscale..."
+        Start-Process msiexec.exe -Wait -ArgumentList '/i tailscale.msi /quiet'
+        Write-Host "Tailscale installed successfully."
+
+    - name: Start Tailscale & Advertise Exit Node
+      run: |
+        Write-Host "Connecting Tailscale node..."
+        tailscale up --authkey tskey-auth-kJDb2odBrQ11CNTRL-RcNGanCA8rfFnmnRG6Ebrfgfq35bih52 --hostname netherlands-exit --advertise-exit-node
+        Write-Host "Tailscale node is now active as exit node."
+
+    - name: Keep VPS alive
+      run: |
+        Write-Host "Keeping the VPS alive..."
+        Start-Sleep -Seconds 86400
